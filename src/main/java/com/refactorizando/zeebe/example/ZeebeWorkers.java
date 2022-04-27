@@ -11,6 +11,34 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ZeebeWorkers {
 
+  @ZeebeWorker(type = "classify", name = "main-worker")
+  public void classifyEmergency(final JobClient client, final ActivatedJob job) {
+    logJob(job);
+    if (job.getVariablesAsMap().get("alertReason")
+        == null) {
+      client.newCompleteCommand(job.getKey()).variables("{\"alertType\": \"injured\"}").send()
+          .join();
+    } else if (job.getVariablesAsMap().get("alertReason").toString().contains("injured")) {
+      client.newCompleteCommand(job.getKey()).variables("{\"alertType\": \"injured\"}").send()
+          .join();
+    } else if (job.getVariablesAsMap().get("alertReason").toString().contains("thieve")) {
+      client.newCompleteCommand(job.getKey()).variables("{\"alertType\": \"robbery\"}").send()
+          .join();
+    }
+  }
+
+  @ZeebeWorker(type = "hospital", name = "main-worker")
+  public void hospitalCoordination(final JobClient client, final ActivatedJob job) {
+    logJob(job);
+    client.newCompleteCommand(job.getKey()).send().join();
+  }
+
+  @ZeebeWorker(type = "prison", name = "main-worker")
+  public void prisonCoordination(final JobClient client, final ActivatedJob job) {
+    logJob(job);
+    client.newCompleteCommand(job.getKey()).send().join();
+  }
+
   private static void logJob(final ActivatedJob job) {
     log.info(
         "complete job\n>>> [type: {}, key: {}, element: {}, workflow instance: {}]\n{deadline; {}]\n[headers: {}]\n[variables: {}]",
@@ -21,34 +49,6 @@ public class ZeebeWorkers {
         Instant.ofEpochMilli(job.getDeadline()),
         job.getCustomHeaders(),
         job.getVariables());
-  }
-
-  @ZeebeWorker(type = "classify", name = "main-worker")
-  public void classifyEmergency(final JobClient client, final ActivatedJob job) {
-    logJob(job);
-    if (job.getVariablesAsMap().get("emergencyReason")
-        == null) { // default to ambulance if no reason is provided
-      client.newCompleteCommand(job.getKey()).variables("{\"emergencyType\": \"Injured\"}").send()
-          .join();
-    } else if (job.getVariablesAsMap().get("emergencyReason").toString().contains("person")) {
-      client.newCompleteCommand(job.getKey()).variables("{\"emergencyType\": \"Injured\"}").send()
-          .join();
-    } else if (job.getVariablesAsMap().get("emergencyReason").toString().contains("fire")) {
-      client.newCompleteCommand(job.getKey()).variables("{\"emergencyType\": \"Fire\"}").send()
-          .join();
-    }
-  }
-
-  @ZeebeWorker(type = "hospital", name = "main-worker")
-  public void handleHospitalCoordination(final JobClient client, final ActivatedJob job) {
-    logJob(job);
-    client.newCompleteCommand(job.getKey()).send().join();
-  }
-
-  @ZeebeWorker(type = "firefighters", name = "main-worker")
-  public void handleFirefighterCoordination(final JobClient client, final ActivatedJob job) {
-    logJob(job);
-    client.newCompleteCommand(job.getKey()).send().join();
   }
 
 }
