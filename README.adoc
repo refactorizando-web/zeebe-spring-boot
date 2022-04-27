@@ -4,7 +4,25 @@
 Simple Zeebe Worker using Spring Boot Starter Example.
 You have to take in mind that before run this application you need configure Zeebe in your Kubernetes cluster.
 
+== Before to start
 
+Run the docker-compose file with:
+```
+docker-compose up -d
+```
+
+to check if everything is ok:
+```
+zbctl status --insecure
+```
+
+Next:
+```
+zbctl deploy alert-process.bpmn --insecure
+```
+```
+zbctl create instance ALERT_PROCESS --variables "{\"alertReason\" : \"thieve\"}" --insecure
+```
 == How does it run?
 
 This is a normal Spring Boot Application so to run it you can run the next command:
