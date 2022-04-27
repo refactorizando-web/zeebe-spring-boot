@@ -1,0 +1,26 @@
+= Spring Boot example with Zeebe
+
+== Introduction ==
+Simple Zeebe Worker using Spring Boot Starter Example.
+You have to take in mind that before run this application you need configure Zeebe in your Kubernetes cluster.
+
+
+== How does it run?
+
+This is a normal Spring Boot Application so to run it you can run the next command:
+
+
+```
+mvn spring-boot:run
+
+``` 
+
+Don't forget configure your Zeebe in the configuration file
+
+```
+zeebe.client.broker.contactPoint: 127.0.0.1:26500
+```
+
+After run the spring boot project you can check your operator page to see the workflow and these
+instances.
+
