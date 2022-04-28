@@ -4,6 +4,9 @@
 Simple Zeebe Worker using Spring Boot Starter Example.
 You have to take in mind that before run this application you need configure Zeebe in your Kubernetes cluster.
 
+If you want more information you can deep in this blog:
+https://refactorizando.com/ejemplo-zeebe-spring-boot-docker
+
 == Before to start
 
 Run the docker-compose file with:
